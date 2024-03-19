@@ -80,6 +80,7 @@ char	*lire_ficher(int fd, char *res)
 		byte_lire = read(fd, buffer, BUFFER_SIZE);
 		if (byte_lire == -1)
 		{
+			free(res);
 			free(buffer);
 			return (0);
 		}
@@ -97,8 +98,12 @@ char	*get_next_line(int fd)
 	static char	*buffer[10240];
 	char		*la_ligne;
 
-	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, 0, 0) < 0)
+	if (fd < 0 || BUFFER_SIZE <= 0)
+	{
+		free(buffer[fd]);
+		buffer[fd] = NULL;
 		return (NULL);
+	}
 	buffer[fd] = lire_ficher(fd, buffer[fd]);
 	if (!buffer[fd])
 		return (NULL);
